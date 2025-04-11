@@ -26,7 +26,7 @@
   rml:serialization formats:Turtle;
   rml:target [
     a rml:Target, rml:FilePath ;
-    rml:path "@@SHAPES.TTL@@";
+    rml:path "@@SHAPES.TTL@@"
   ]
   .
 
@@ -100,4 +100,63 @@
       rml:constant "TODO: provide a description";
     ];
   ];
+  .
+
+
+#########################
+# Mapping of the states #
+#########################
+
+<StatesSource>
+  a rml:LogicalSource ;
+  rml:referenceFormulation rml:CSV ;
+  rml:source [
+    a rml:FilePath ;
+    rml:path "@@STATES.CSV@@"
+  ]
+  .
+
+<StatesTarget>
+  a rml:logicalTarget ;
+  rml:serialization formats:Turtle;
+  rml:target [
+    a rml:Target, rml:FilePath ;
+    rml:path "@@STATES.TTL@@"
+  ]
+  .
+
+<StatesMap>
+  a rml:TriplesMap ;
+  rml:logicalSource <StatesSource>;
+
+  rml:subjectMap [
+    a rml:subjectMap ;
+    rml:class o-steps:State ;
+    rml:template "http://example.com/states#{name}" ;
+    rml:logicalTarget <StatesTarget>
+  ];
+
+  rml:predicateObjectMap [
+    a rml:PredicateObjectMap ;
+    rml:predicateMap [
+      a rml:PredicateMap ;
+      rml:constant rdfs:label
+    ];
+    rml:objectMap [
+      a rml:ObjectMap ;
+      rml:reference "description"
+    ];
+  ];
+
+  rml:predicateObjectMap [
+    a rml:PredicateObjectMap ;
+    rml:predicateMap [
+      a rml:PredicateMap ;
+      rml:constant o-steps:hasStateShape
+    ];
+    rml:objectMap [
+      a rml:ObjectMap ;
+      rml:template "http://example.com/shapes#{shape}"
+    ];
+  ]
   .

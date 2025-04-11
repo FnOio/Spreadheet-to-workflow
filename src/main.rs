@@ -28,8 +28,8 @@ fn main() {
     let states_sheet_index = wb.sheet_idx("states").expect("A sheet with name 'states' is required.");
     let states_sheet = wb.sheet(states_sheet_index);
 
-    let states_output_path = path_to_file.with_extension("states.csv");
-    let mut states_output = BufWriter::new(File::create(&states_output_path).expect("Could not create/truncate states file"));
+    let states_csv_path = path_to_file.with_extension("states.csv");
+    let mut states_output = BufWriter::new(File::create(&states_csv_path).expect("Could not create/truncate states file"));
     states_output.write_all(b"\"name\",\"description\",\"shape\"\n").unwrap();
 
     // parse the states, duplicate the ones with multiple shapes
@@ -59,8 +59,8 @@ fn main() {
     let steps_sheet_index = wb.sheet_idx("steps").expect("A sheet with name 'steps' is required.");
     let steps_sheet = wb.sheet(steps_sheet_index);
 
-    let steps_output_path = path_to_file.with_extension("steps.csv");
-    let mut steps_output = BufWriter::new(File::create(&steps_output_path).expect("Could not create/truncate steps file"));
+    let steps_csv_path = path_to_file.with_extension("steps.csv");
+    let mut steps_output = BufWriter::new(File::create(&steps_csv_path).expect("Could not create/truncate steps file"));
     steps_output.write_all(b"\"name\",\"description\",\"level\",\"start_state\",\"end_state\"\n").unwrap();
 
     let row_iter_steps = steps_sheet.iter_rows((1, 0)..(max_rows, 5));
@@ -88,9 +88,13 @@ fn main() {
     shapes_output_file.write_all(shapes_str.as_bytes()).unwrap();
 
     // write the RML mapping file
+    let states_ttl_path = path_to_file.with_extension("states.ttl");
+    
     let rml_mappings = fs::read_to_string(Path::new("resources").join("mapping-template.rml.ttl")).expect("Could not read mapping-template.rml.ttl file")
         .replacen("@@SHAPES.CSV@@", &shapes_csv_path.to_str().unwrap(), 1)
-        .replacen("@@SHAPES.TTL@@", &shapes_ttl_path.to_str().unwrap(), 1);
+        .replacen("@@SHAPES.TTL@@", &shapes_ttl_path.to_str().unwrap(), 1)
+        .replacen("@@STATES.CSV@@", &states_csv_path.to_str().unwrap(), 1)
+        .replacen("@@STATES.TTL@@", &states_ttl_path.to_str().unwrap(), 1);
     let rml_mapping_output_path = path_to_file.with_extension("mapping.rml.ttl");
     fs::write(rml_mapping_output_path, rml_mappings).expect("Could not write rml mappings file");
 }
