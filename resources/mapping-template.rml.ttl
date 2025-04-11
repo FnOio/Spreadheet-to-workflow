@@ -1,3 +1,103 @@
 @prefix rml: <http://w3id.org/rml/> .
 @prefix ex: <http://example.com/ns#> .
+@prefix o-steps: <https://fast.ilabt.imec.be/ns/oslo-steps/0.2#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix o-persoon: <https://data.vlaanderen.be/ns/persoon#> .
+@prefix formats: <http://www.w3.org/ns/formats/> .
 
+@base <http://example.com/base/> .
+
+#########################
+# Mapping of the shapes #
+#########################
+
+<ShapesSource>
+  a rml:LogicalSource ;
+  rml:referenceFormulation rml:CSV ;
+  rml:source [
+    a rml:FilePath ;
+    rml:path "@@SHAPES.CSV@@"
+  ]
+  .
+
+<ShapesTarget>
+  a rml:logicalTarget ;
+  rml:serialization formats:Turtle;
+  rml:target [
+    a rml:Target, rml:FilePath ;
+    rml:path "@@SHAPES.TTL@@";
+  ]
+  .
+
+<ShapesMap>
+  a rml:TriplesMap ;
+  rml:logicalSource <ShapesSource>;
+
+  rml:subjectMap [
+    a rml:subjectMap ;
+    rml:class o-steps:StateShape ;
+    rml:template "http://example.com/shapes#{name}";
+    rml:logicalTarget <ShapesTarget>
+  ];
+
+  rml:predicateObjectMap [
+    a rml:PredicateObjectMap ;
+    rml:predicateMap [
+      a rml:PredicateMap ;
+      rml:constant rdfs:label
+    ];
+    rml:objectMap [
+      a rml:ObjectMap ;
+      rml:constant "TODO: provide a description";
+    ];
+  ];
+
+  rml:predicateObjectMap [
+    a rml:PredicateObjectMap ;
+    rml:predicateMap [
+      a rml:PredicateMap ;
+      rml:constant sh:TargetClass
+    ];
+    rml:objectMap [
+      a rml:ObjectMap ;
+      rml:constant o-persoon:Inwoner
+    ]
+  ];
+
+  rml:predicateObjectMap [
+    a rml:PredicateObjectMap ;
+    rml:predicateMap [
+      a rml:PredicateMap ;
+      rml:constant sh:property
+    ];
+    rml:objectMap [
+      a rml:ObjectMap ;
+      rml:template "http://example.com/shapes#{name}PropertyShape"
+    ]
+  ]
+  .
+
+<PropertyShapesMap>
+  a rml:TriplesMap ;
+  rml:logicalSource <ShapesSource>;
+
+  rml:subjectMap [
+    a rml:subjectMap ;
+    rml:class sh:PropertyShape ;
+    rml:template "http://example.com/shapes#{name}PropertyShape" ;
+    rml:logicalTarget <ShapesTarget>
+  ];
+
+  rml:predicateObjectMap [
+    a rml:PredicateObjectMap ;
+    rml:predicateMap [
+      a rml:PredicateMap ;
+      rml:constant rdfs:label
+    ];
+    rml:objectMap [
+      a rml:ObjectMap ;
+      rml:constant "TODO: provide a description";
+    ];
+  ];
+  .

@@ -1,8 +1,8 @@
 use std::collections::HashSet;
-use std::env;
+use std::{env, fs};
 use std::fs::File;
 use std::io::{BufReader, BufWriter, Write};
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use spreadsheet_ods::OdsOptions;
 
 fn main() {
@@ -77,11 +77,20 @@ fn main() {
     }
 
     // write shapes csv
-    let mut shapes_str = String::from("shapes\n");
+    let mut shapes_str = String::from("name\n");
     shapes_str.push_str(shape_set.iter()
         .map(|s| s.to_string())
         .collect::<Vec<String>>().join("\n").as_str());
-    let shapes_output_path = path_to_file.with_extension("shapes.csv");
-    let mut shapes_output_file = File::create(&shapes_output_path).expect("Could not create/truncate shapes file");
+    shapes_str.push('\n');
+    let shapes_csv_path = path_to_file.with_extension("shapes.csv");
+    let shapes_ttl_path = path_to_file.with_extension("shapes.ttl");
+    let mut shapes_output_file = File::create(&shapes_csv_path).expect("Could not create/truncate shapes file");
     shapes_output_file.write_all(shapes_str.as_bytes()).unwrap();
+
+    // write the RML mapping file
+    let rml_mappings = fs::read_to_string(Path::new("resources").join("mapping-template.rml.ttl")).expect("Could not read mapping-template.rml.ttl file")
+        .replacen("@@SHAPES.CSV@@", &shapes_csv_path.to_str().unwrap(), 1)
+        .replacen("@@SHAPES.TTL@@", &shapes_ttl_path.to_str().unwrap(), 1);
+    let rml_mapping_output_path = path_to_file.with_extension("mapping.rml.ttl");
+    fs::write(rml_mapping_output_path, rml_mappings).expect("Could not write rml mappings file");
 }
