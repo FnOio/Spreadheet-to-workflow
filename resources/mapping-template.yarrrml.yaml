@@ -6,6 +6,7 @@ prefixes:
   o-persoon: "https://data.vlaanderen.be/ns/persoon#"
   rdfs: "http://www.w3.org/2000/01/rdf-schema#"
   xl: "http://www.w3.org/2008/05/skos-xl#"
+  xsd: "http://www.w3.org/2001/XMLSchema#"
 
 sources:
   shapes-source: ['@@SHAPES.CSV@@~csv']
@@ -44,8 +45,13 @@ mappings:
       - value: http://example.com/shapes#$(name)PropertyShape
         targets: shapes-target
     po:
-      - [a, o-steps:PropertyShape ]
-      - [rdfs:label, 'TODO: define your shape here']
+      - [a, sh:PropertyShape ]
+      - [rdfs:label, 'TODO: provide a description']
+      - [sh:path, ex:has$(name)]
+      - [sh:dataType, xsd:boolean]
+      - [sh:minCount, '1', xsd:integer]
+      - [sh:maxCount, '1', xsd:integer]
+      - [sh:pattern, 'true']
 
 
   #####################
