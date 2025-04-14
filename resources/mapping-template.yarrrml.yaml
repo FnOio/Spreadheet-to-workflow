@@ -1,0 +1,117 @@
+
+prefixes:
+  ex: "http://example.com/ns#"
+  o-steps: "https://fast.ilabt.imec.be/ns/oslo-steps/0.2#"
+  sh: "http://www.w3.org/ns/shacl#"
+  o-persoon: "https://data.vlaanderen.be/ns/persoon#"
+  rdfs: "http://www.w3.org/2000/01/rdf-schema#"
+  xl: "http://www.w3.org/2008/05/skos-xl#"
+
+sources:
+  shapes-source: ['@@SHAPES.CSV@@~csv']
+  states-source: ['@@STATES.CSV@@~csv']
+  steps-source: ['@@STEPS.CSV@@~csv']
+
+targets:
+  shapes-target: ['@@SHAPES.TTL@@~void', turtle]
+  states-target: ['@@STATES.TTL@@~void', turtle]
+  steps-target: ['@@STEPS.TTL@@~void', turtle]
+
+
+mappings:
+  
+  ###########################
+  # mapping of state shapes #
+  ###########################
+  shape:
+    sources: shapes-source
+    subjects:
+      - value: http://example.com/shapes#$(name)
+        targets: shapes-target
+    po:
+      - [a, o-steps:StateShape]
+      - [rdfs:label, 'TODO: provide a description']
+      - [sh:TargetClass, o-persoon:Inwoner]
+      - predicate: sh:property
+        object:
+          - mapping: propertyShape
+  
+  # The property shapes are the actual shapes. This generates no actual content:
+  # it is up to the user to define the SHACL shapes
+  propertyShape:
+    sources: shapes-source
+    subjects:
+      - value: http://example.com/shapes#$(name)PropertyShape
+        targets: shapes-target
+    po:
+      - [a, o-steps:PropertyShape ]
+      - [rdfs:label, 'TODO: define your shape here']
+
+
+  #####################
+  # mapping of states #
+  #####################      
+  states:
+    sources: states-source
+    subjects:
+      - value: http://example.com/states#$(name)
+        targets: states-target
+    po:
+      - [a, o-steps:State ]
+      - [rdfs:label, $(description)]
+      - predicate: o-steps:hasStateShape
+        object:
+          - mapping: shape
+            condition:
+              function: equal
+              parameters:
+                - [str1, $(name), o]
+                - [str2, $(shape), s]
+
+  ####################
+  # mapping of steps #
+  ####################   
+  steps:
+    sources: steps-source
+    subjects:
+      - value: http://example.com/steps#$(name)
+        targets: steps-target
+    po:
+      - [a, https://fast.ilabt.imec.be/ns/oslo-steps/0.2#$(level)LevelStep ]
+      - predicate: o-steps:hasDescription
+        objects:
+          - mapping: stepsDescriptions
+      - predicate: o-steps:requiresState  # Join with an existing start state
+        objects:
+          - mapping: states
+            condition:
+              function: equal
+              parameters:
+                - [ str1, $(start_state), s ]
+                - [ str2, $(name), o ]
+      - predicate: o-steps:requiresState # start_state can also be "empty" indicating the empty state.
+        objects:
+          - value: o-steps:emptyState
+            type: iri
+        condition:
+          function: equal
+          parameters:
+            - [ str1, $(start_state)]
+            - [ str2, empty]
+      - predicate: o-steps:producesState
+        objects:
+          - mapping: states
+            condition:
+              function: equal
+              parameters:
+                - [ str1, $(end_state), s ]
+                - [ str2, $(name), o ]
+
+
+  stepsDescriptions:
+    sources: steps-source
+    subjects:
+      - value: http://example.com/steps#$(name)Description
+        targets: steps-target
+    po:
+      - [xl:literalForm, $(description)]

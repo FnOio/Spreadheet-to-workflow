@@ -87,17 +87,17 @@ fn main() {
     let mut shapes_output_file = File::create(&shapes_csv_path).expect("Could not create/truncate shapes file");
     shapes_output_file.write_all(shapes_str.as_bytes()).unwrap();
 
-    // write the RML mapping file
+    // write the YARRRML mapping file
     let states_ttl_path = path_to_file.with_extension("states.ttl");
     let steps_ttl_path = path_to_file.with_extension("steps.ttl");
     
-    let rml_mappings = fs::read_to_string(Path::new("resources").join("mapping-template.rml.ttl")).expect("Could not read mapping-template.rml.ttl file")
+    let yarrrml_mappings = fs::read_to_string(Path::new("resources").join("mapping-template.yarrrml.yaml")).expect("Could not read mapping-template.yarrrml.yaml file")
         .replacen("@@SHAPES.CSV@@", &shapes_csv_path.to_str().unwrap(), 1)
         .replacen("@@SHAPES.TTL@@", &shapes_ttl_path.to_str().unwrap(), 1)
         .replacen("@@STATES.CSV@@", &states_csv_path.to_str().unwrap(), 1)
         .replacen("@@STATES.TTL@@", &states_ttl_path.to_str().unwrap(), 1)
         .replacen("@@STEPS.CSV@@", &steps_csv_path.to_str().unwrap(), 1)
         .replacen("@@STEPS.TTL@@", &steps_ttl_path.to_str().unwrap(), 1);
-    let rml_mapping_output_path = path_to_file.with_extension("mapping.rml.ttl");
-    fs::write(rml_mapping_output_path, rml_mappings).expect("Could not write rml mappings file");
+    let rml_mapping_output_path = path_to_file.with_extension("mapping.yarrrml.yaml");
+    fs::write(rml_mapping_output_path, yarrrml_mappings).expect("Could not write rml mappings file");
 }
