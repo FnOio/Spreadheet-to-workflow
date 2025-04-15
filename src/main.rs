@@ -3,14 +3,16 @@ use std::{env, fs};
 use std::fs::File;
 use std::io::{BufReader, BufWriter, Write};
 use std::path::{Path, PathBuf};
-use spreadsheet_ods::OdsOptions;
+use spreadsheet_ods::{OdsOptions, WorkBook};
+
+const MAX_ROWS:u32 = 1000;
 
 fn main() {
     let file = env::args()
         .nth(1)
         .expect("Please provide an ods file to convert");
 
-    let path_to_file = PathBuf::from(file);
+    let path_to_file = PathBuf::from(file).canonicalize().unwrap();
     let input = BufReader::new(File::open(&path_to_file).expect("Could not open ods file"));
 
     let wb = OdsOptions::default().
@@ -20,20 +22,31 @@ fn main() {
         .ignore_empty_cells()
         .read_ods(input).expect("Could not parse ods file");
 
-    let max_rows = 1000u32;
+    // output files go to a directory with name of the spreadsheet file (without extension)
+    let output_path_suffix = format!("{}_output", path_to_file.file_stem().unwrap().to_str().unwrap());
+    let output_path = path_to_file.parent().unwrap().join(output_path_suffix);
+    fs::create_dir_all(&output_path).unwrap();
 
+    write_states(&wb, &output_path);
+    write_steps(&wb, &output_path);
+    write_mappings(&output_path);
+}
+
+fn write_states(workbook: &WorkBook, output_path: &PathBuf) {
+    // shapes found during extracting the states will be saved in this set and returned
     let mut shape_set: HashSet<String> = HashSet::new();
 
-    // write states csv
-    let states_sheet_index = wb.sheet_idx("states").expect("A sheet with name 'states' is required.");
-    let states_sheet = wb.sheet(states_sheet_index);
+    // find the states sheet in the workbook
+    let states_sheet_index = workbook.sheet_idx("states").expect("A sheet with name 'states' is required.");
+    let states_sheet = workbook.sheet(states_sheet_index);
 
-    let states_csv_path = path_to_file.with_extension("states.csv");
+    // this is where the states will be written as CSV
+    let states_csv_path = output_path.join("states.csv");
     let mut states_output = BufWriter::new(File::create(&states_csv_path).expect("Could not create/truncate states file"));
     states_output.write_all(b"\"name\",\"description\",\"shape\"\n").unwrap();
 
     // parse the states, duplicate the ones with multiple shapes
-    let row_iter_states = states_sheet.iter_rows((1, 0)..(max_rows, 3));
+    let row_iter_states = states_sheet.iter_rows((1, 0)..(MAX_ROWS, 3));
     let mut current_output_line = String::new();
     for ((_row, col), value) in row_iter_states {
         if col == 2 {   // This is the column with shapes. If multiple shapes are listes, the lines are duplicated with a single shape per line.
@@ -55,15 +68,28 @@ fn main() {
         }
     }
 
-    // write steps csv
-    let steps_sheet_index = wb.sheet_idx("steps").expect("A sheet with name 'steps' is required.");
-    let steps_sheet = wb.sheet(steps_sheet_index);
+    // now write the shapes
+    let mut shapes_str = String::from("name\n");
+    shapes_str.push_str(shape_set.iter()
+        .map(|s| s.to_string())
+        .collect::<Vec<String>>().join("\n").as_str());
+    shapes_str.push('\n');
+    let shapes_csv_path = output_path.join("shapes.csv");
+    let mut shapes_output_file = File::create(&shapes_csv_path).expect("Could not create/truncate shapes file");
+    shapes_output_file.write_all(shapes_str.as_bytes()).unwrap();
+}
 
-    let steps_csv_path = path_to_file.with_extension("steps.csv");
+fn write_steps(workbook: &WorkBook, output_path: &PathBuf) {
+    // find the steps sheet in the workbook
+    let steps_sheet_index = workbook.sheet_idx("steps").expect("A sheet with name 'steps' is required.");
+    let steps_sheet = workbook.sheet(steps_sheet_index);
+
+    // this is where the steps will be written as CSV
+    let steps_csv_path = output_path.join("steps.csv");
     let mut steps_output = BufWriter::new(File::create(&steps_csv_path).expect("Could not create/truncate steps file"));
     steps_output.write_all(b"\"name\",\"description\",\"level\",\"start_state\",\"end_state\"\n").unwrap();
 
-    let row_iter_steps = steps_sheet.iter_rows((1, 0)..(max_rows, 5));
+    let row_iter_steps = steps_sheet.iter_rows((1, 0)..(MAX_ROWS, 5));
     for ((_row, col), value) in row_iter_steps {
         if col == 4 {
             steps_output.write_all(b"\"").unwrap();
@@ -75,22 +101,18 @@ fn main() {
             steps_output.write_all(b"\",").unwrap();
         }
     }
+}
 
-    // write shapes csv
-    let mut shapes_str = String::from("name\n");
-    shapes_str.push_str(shape_set.iter()
-        .map(|s| s.to_string())
-        .collect::<Vec<String>>().join("\n").as_str());
-    shapes_str.push('\n');
-    let shapes_csv_path = path_to_file.with_extension("shapes.csv");
-    let shapes_ttl_path = path_to_file.with_extension("shapes.ttl");
-    let mut shapes_output_file = File::create(&shapes_csv_path).expect("Could not create/truncate shapes file");
-    shapes_output_file.write_all(shapes_str.as_bytes()).unwrap();
-
+fn write_mappings(output_path: &PathBuf) {
     // write the YARRRML mapping file
-    let states_ttl_path = path_to_file.with_extension("states.ttl");
-    let steps_ttl_path = path_to_file.with_extension("steps.ttl");
-    
+    let states_ttl_path = output_path.join("states.ttl");
+    let states_csv_path = output_path.join("states.csv");
+    let steps_ttl_path = output_path.join("steps.ttl");
+    let steps_csv_path = output_path.join("steps.csv");
+    let shapes_csv_path = output_path.join("shapes.csv");
+    let shapes_ttl_path = output_path.join("shapes_ttl");
+    let mapping_output_path = output_path.join("mapping.yarrrml.yaml");
+
     let yarrrml_mappings = fs::read_to_string(Path::new("resources").join("mapping-template.yarrrml.yaml")).expect("Could not read mapping-template.yarrrml.yaml file")
         .replacen("@@SHAPES.CSV@@", &shapes_csv_path.to_str().unwrap(), 1)
         .replacen("@@SHAPES.TTL@@", &shapes_ttl_path.to_str().unwrap(), 1)
@@ -98,6 +120,5 @@ fn main() {
         .replacen("@@STATES.TTL@@", &states_ttl_path.to_str().unwrap(), 1)
         .replacen("@@STEPS.CSV@@", &steps_csv_path.to_str().unwrap(), 1)
         .replacen("@@STEPS.TTL@@", &steps_ttl_path.to_str().unwrap(), 1);
-    let rml_mapping_output_path = path_to_file.with_extension("mapping.yarrrml.yaml");
-    fs::write(rml_mapping_output_path, yarrrml_mappings).expect("Could not write rml mappings file");
+    fs::write(mapping_output_path, yarrrml_mappings).expect("Could not write mappings file");
 }
