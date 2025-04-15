@@ -610,13 +610,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "925383efa346730478fb4838dbe9137d2a47675ad789c546d150a6e1dd4ab31c"
 
 [[package]]
-name = "prepare-flow-mappings"
-version = "0.1.0"
-dependencies = [
- "spreadsheet-ods",
-]
-
-[[package]]
 name = "proc-macro-crate"
 version = "3.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -947,6 +940,13 @@ dependencies = [
  "rust_decimal_macros",
  "string_cache",
  "zip",
+]
+
+[[package]]
+name = "spreadsheet-to-flow"
+version = "0.1.0"
+dependencies = [
+ "spreadsheet-ods",
 ]
 
 [[package]]

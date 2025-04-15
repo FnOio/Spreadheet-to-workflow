@@ -1,5 +1,5 @@
 [package]
-name = "prepare-flow-mappings"
+name = "spreadsheet-to-flow"
 version = "0.1.0"
 edition = "2021"
 
