@@ -110,7 +110,7 @@ fn write_mappings(output_path: &PathBuf) {
     let steps_ttl_path = output_path.join("steps.ttl");
     let steps_csv_path = output_path.join("steps.csv");
     let shapes_csv_path = output_path.join("shapes.csv");
-    let shapes_ttl_path = output_path.join("shapes_ttl");
+    let shapes_ttl_path = output_path.join("shapes.ttl");
     let mapping_output_path = output_path.join("mapping.yarrrml.yaml");
 
     let yarrrml_mappings = fs::read_to_string(Path::new("resources").join("mapping-template.yarrrml.yaml")).expect("Could not read mapping-template.yarrrml.yaml file")
