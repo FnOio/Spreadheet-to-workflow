@@ -32,12 +32,12 @@ mappings:
   shape:
     sources: shapes-source
     subjects:
-      - value: http://example.com/shapes#$(name)
+      - value: http://localhost:8000/shapes#$(name)
         targets: shapes-target
     po:
       - [a, o-steps:StateShape]
       - [rdfs:label, 'TODO: provide a description']
-      - [sh:TargetClass, o-persoon:Inwoner]
+      - [sh:targetClass, o-persoon:Inwoner~iri]
       - predicate: sh:property
         object:
           - mapping: propertyShape
@@ -47,13 +47,13 @@ mappings:
   propertyShape:
     sources: shapes-source
     subjects:
-      - value: http://example.com/shapes#$(name)PropertyShape
+      - value: http://localhost:8000/shapes#$(name)PropertyShape
         targets: shapes-target
     po:
       - [a, sh:PropertyShape ]
       - [rdfs:label, 'TODO: provide a description']
       - [sh:path, ex:has$(name)~iri]
-      - [sh:dataType, xsd:boolean]
+      - [sh:datatype, xsd:boolean~iri]
       - [sh:minCount, '1', xsd:integer]
       - [sh:maxCount, '1', xsd:integer]
       - [sh:pattern, 'true']
@@ -65,7 +65,7 @@ mappings:
   states:
     sources: states-source
     subjects:
-      - value: http://example.com/states#$(name)
+      - value: http://localhost:8000/states#$(name)
         targets: states-target
     po:
       - [a, o-steps:State ]
@@ -85,14 +85,14 @@ mappings:
   steps:
     sources: steps-source
     subjects:
-      - value: http://example.com/steps#$(name)
+      - value: http://localhost:8000/steps#$(name)
         targets: steps-target
     po:
       - [a, https://fast.ilabt.imec.be/ns/oslo-steps/0.2#$(levels)LevelStep ]
       - predicate: o-steps:hasDescription
         objects:
           - mapping: stepsDescriptions
-      - [o-steps:requiresState, http://example.com/states#$(start_states)~iri]
+      - [o-steps:requiresState, http://localhost:8000/states#$(start_states)~iri]
       - predicate: o-steps:requiresState
         objects:
           - value: o-steps:emptyState
@@ -106,12 +106,12 @@ mappings:
                 function: grel:array_length
                 parameters:
                   - [grel:p_array_a, $(start_states)]
-      - [o-steps:producesState, http://example.com/states#$(end_states)~iri]
+      - [o-steps:producesState, http://localhost:8000/states#$(end_states)~iri]
 
   stepsDescriptions:
     sources: steps-source
     subjects:
-      - value: http://example.com/steps#$(name)Description
+      - value: http://localhost:8000/steps#$(name)Description
         targets: steps-target
     po:
       - [xl:literalForm, $(description)]
