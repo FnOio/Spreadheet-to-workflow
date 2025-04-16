@@ -20,7 +20,7 @@ targets:
 
 
 mappings:
-  
+
   ###########################
   # mapping of state shapes #
   ###########################
@@ -36,7 +36,7 @@ mappings:
       - predicate: sh:property
         object:
           - mapping: propertyShape
-  
+
   # The property shapes are the actual shapes. This generates no actual content:
   # it is up to the user to define the SHACL shapes
   propertyShape:
@@ -47,7 +47,7 @@ mappings:
     po:
       - [a, sh:PropertyShape ]
       - [rdfs:label, 'TODO: provide a description']
-      - [sh:path, ex:has$(name)]
+      - [sh:path, ex:has$(name)~iri]
       - [sh:dataType, xsd:boolean]
       - [sh:minCount, '1', xsd:integer]
       - [sh:maxCount, '1', xsd:integer]
