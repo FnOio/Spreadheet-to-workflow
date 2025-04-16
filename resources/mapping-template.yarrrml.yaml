@@ -7,11 +7,16 @@ prefixes:
   rdfs: "http://www.w3.org/2000/01/rdf-schema#"
   xl: "http://www.w3.org/2008/05/skos-xl#"
   xsd: "http://www.w3.org/2001/XMLSchema#"
+  grel: "http://users.ugent.be/~bjdmeest/function/grel.ttl#"
+  idlab-fn: "https://w3id.org/imec/idlab/function#"
 
 sources:
   shapes-source: ['@@SHAPES.CSV@@~csv']
   states-source: ['@@STATES.CSV@@~csv']
-  steps-source: ['@@STEPS.CSV@@~csv']
+  steps-source:
+    access: '@@STEPS.JSON@@'
+    referenceFormulation: jsonpath
+    iterator: $[*]
 
 targets:
   shapes-target: ['@@SHAPES.TTL@@~void', turtle]
@@ -83,36 +88,25 @@ mappings:
       - value: http://example.com/steps#$(name)
         targets: steps-target
     po:
-      - [a, https://fast.ilabt.imec.be/ns/oslo-steps/0.2#$(level)LevelStep ]
+      - [a, https://fast.ilabt.imec.be/ns/oslo-steps/0.2#$(levels)LevelStep ]
       - predicate: o-steps:hasDescription
         objects:
           - mapping: stepsDescriptions
-      - predicate: o-steps:requiresState  # Join with an existing start state
-        objects:
-          - mapping: states
-            condition:
-              function: equal
-              parameters:
-                - [ str1, $(start_state), s ]
-                - [ str2, $(name), o ]
-      - predicate: o-steps:requiresState # start_state can also be "empty" indicating the empty state.
+      - [o-steps:requiresState, http://example.com/states#$(start_states)~iri]
+      - predicate: o-steps:requiresState
         objects:
           - value: o-steps:emptyState
             type: iri
         condition:
           function: equal
           parameters:
-            - [ str1, $(start_state)]
-            - [ str2, empty]
-      - predicate: o-steps:producesState
-        objects:
-          - mapping: states
-            condition:
-              function: equal
-              parameters:
-                - [ str1, $(end_state), s ]
-                - [ str2, $(name), o ]
-
+            - [grel:valueParameter, 0]
+            - parameter: grel:valueParameter2
+              value:
+                function: grel:array_length
+                parameters:
+                  - [grel:p_array_a, $(start_states)]
+      - [o-steps:producesState, http://example.com/states#$(end_states)~iri]
 
   stepsDescriptions:
     sources: steps-source

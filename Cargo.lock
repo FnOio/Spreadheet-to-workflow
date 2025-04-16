@@ -946,6 +946,8 @@ dependencies = [
 name = "spreadsheet-to-flow"
 version = "0.1.0"
 dependencies = [
+ "serde",
+ "serde_json",
  "spreadsheet-ods",
 ]
 

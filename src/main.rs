@@ -4,6 +4,7 @@ use std::fs::File;
 use std::io::{BufReader, BufWriter, Write};
 use std::path::{Path, PathBuf};
 use spreadsheet_ods::{OdsOptions, WorkBook};
+use serde::{Deserialize, Serialize};
 
 const MAX_ROWS:u32 = 1000;
 
@@ -15,11 +16,8 @@ fn main() {
     let path_to_file = PathBuf::from(file).canonicalize().unwrap();
     let input = BufReader::new(File::open(&path_to_file).expect("Could not open ods file"));
 
-    let wb = OdsOptions::default().
-        // don't read styles
-        content_only()
-        // don't create empty cells
-        .ignore_empty_cells()
+    let wb = OdsOptions::default()
+        .content_only()// only data, no styles, formulas...
         .read_ods(input).expect("Could not parse ods file");
 
     // output files go to a directory with name of the spreadsheet file (without extension)
@@ -79,28 +77,82 @@ fn write_states(workbook: &WorkBook, output_path: &PathBuf) {
     shapes_output_file.write_all(shapes_str.as_bytes()).unwrap();
 }
 
+#[derive(Serialize, Deserialize)]
+struct Step {
+    name: String,
+    description: String,
+    levels: HashSet<String>,
+    start_states: HashSet<String>,
+    end_states: HashSet<String>,
+}
+
 fn write_steps(workbook: &WorkBook, output_path: &PathBuf) {
     // find the steps sheet in the workbook
     let steps_sheet_index = workbook.sheet_idx("steps").expect("A sheet with name 'steps' is required.");
     let steps_sheet = workbook.sheet(steps_sheet_index);
 
     // this is where the steps will be written as CSV
-    let steps_csv_path = output_path.join("steps.csv");
-    let mut steps_output = BufWriter::new(File::create(&steps_csv_path).expect("Could not create/truncate steps file"));
-    steps_output.write_all(b"\"name\",\"description\",\"level\",\"start_state\",\"end_state\"\n").unwrap();
+    let steps_json_path = output_path.join("steps.json");
+    let mut steps_output = BufWriter::new(File::create(&steps_json_path).expect("Could not create/truncate steps file"));
+    //steps_output.write_all(b"\"name\",\"description\",\"level\",\"start_state\",\"end_state\"\n").unwrap();
 
     let row_iter_steps = steps_sheet.iter_rows((1, 0)..(MAX_ROWS, 5));
+
+    let mut name: String = String::new();
+    let mut description: String = String::new();
+    let mut levels: HashSet<String> = HashSet::new();
+    let mut start_states: HashSet<String> = HashSet::new();
+    
+    let mut json_steps: Vec<Step> = Vec::new();
+
     for ((_row, col), value) in row_iter_steps {
-        if col == 4 {
-            steps_output.write_all(b"\"").unwrap();
-            steps_output.write_all(value.value.as_str_opt().unwrap().as_bytes()).unwrap();
-            steps_output.write_all(b"\"\n").unwrap();
-        } else {
-            steps_output.write_all(b"\"").unwrap();
-            steps_output.write_all(value.value.as_str_opt().unwrap().as_bytes()).unwrap();
-            steps_output.write_all(b"\",").unwrap();
+        match col {
+            0 => {
+                let value_opt = value.value.as_string_opt();
+                match value_opt {
+                    Some(value) => {name = value}
+                    None => break   // this means an empty row, so stop parsing rows
+                }
+            },
+            1 => description = value.value.as_string_opt().unwrap().to_string(),
+            2 => levels =
+                value.value.as_str_or_default()
+                    .replace(' ', "")
+                    .split(',')
+                    .map(String::from)
+                    .collect(),
+            3 => {
+                let start_states_option = value.value.as_string_opt();
+                start_states = match start_states_option { 
+                    Some(start_states) => {
+                        start_states
+                            .replace(' ', "")
+                            .split(',')
+                            .map(String::from)
+                            .collect()
+                    },
+                    None => HashSet::new(),
+                };
+            },
+            4 => {
+                let end_states: HashSet<String> = value.value.as_string_opt().unwrap().to_string()
+                    .replace(' ', "")
+                    .split(',')
+                    .map(String::from)
+                    .collect();
+                let step = Step {
+                    name: name.clone(), 
+                    description: description.clone(), 
+                    levels: levels.clone(), 
+                    start_states: start_states.clone(),
+                    end_states
+                };
+                json_steps.push(step);
+            },
+            _ => { /* ignore the rest of the columns */}
         }
     }
+    serde_json::to_writer(&mut steps_output, &json_steps).unwrap();
 }
 
 fn write_mappings(output_path: &PathBuf) {
@@ -108,7 +160,7 @@ fn write_mappings(output_path: &PathBuf) {
     let states_ttl_path = output_path.join("states.ttl");
     let states_csv_path = output_path.join("states.csv");
     let steps_ttl_path = output_path.join("steps.ttl");
-    let steps_csv_path = output_path.join("steps.csv");
+    let steps_json_path = output_path.join("steps.json");
     let shapes_csv_path = output_path.join("shapes.csv");
     let shapes_ttl_path = output_path.join("shapes.ttl");
     let mapping_output_path = output_path.join("mapping.yarrrml.yaml");
@@ -118,7 +170,7 @@ fn write_mappings(output_path: &PathBuf) {
         .replacen("@@SHAPES.TTL@@", &shapes_ttl_path.to_str().unwrap(), 1)
         .replacen("@@STATES.CSV@@", &states_csv_path.to_str().unwrap(), 1)
         .replacen("@@STATES.TTL@@", &states_ttl_path.to_str().unwrap(), 1)
-        .replacen("@@STEPS.CSV@@", &steps_csv_path.to_str().unwrap(), 1)
+        .replacen("@@STEPS.JSON@@", &steps_json_path.to_str().unwrap(), 1)
         .replacen("@@STEPS.TTL@@", &steps_ttl_path.to_str().unwrap(), 1);
     fs::write(mapping_output_path, yarrrml_mappings).expect("Could not write mappings file");
 }
