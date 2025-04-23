@@ -40,7 +40,7 @@ fn write_states(workbook: &WorkBook, output_path: &PathBuf) -> HashSet<String> {
 
     // this is where the states will be written as CSV
     let mut states_output = BufWriter::new(File::create(output_path.join("states.csv")).expect("Could not create/truncate states file"));
-    states_output.write_all(b"\"name\",\"description\",\"shape\"\n").unwrap();
+    states_output.write_all(b"\"name\",\"shape\",\"description\"\n").unwrap();
     let mut shapes_output = BufWriter::new(File::create(output_path.join("shapes.csv")).expect("Could not create/truncate shapes file"));
     shapes_output.write_all(b"\"name\"\n").unwrap();
 
@@ -54,9 +54,8 @@ fn write_states(workbook: &WorkBook, output_path: &PathBuf) -> HashSet<String> {
             states_output.write_all(b"\"\n").unwrap();
         } else {
             let state_name = value.value.as_string_opt().unwrap();
-            states_output.write_all(b"\"").unwrap();
-            states_output.write_all(state_name.as_bytes()).unwrap();
-            states_output.write_all(b"\",").unwrap();
+            let str_to_write = format!("\"{state_name}\",\"{state_name}\",");
+            states_output.write_all(str_to_write.as_bytes()).unwrap();
             shapes_output.write_all(b"\"").unwrap();
             shapes_output.write_all(state_name.as_bytes()).unwrap();
             shapes_output.write_all(b"\"\n").unwrap();
