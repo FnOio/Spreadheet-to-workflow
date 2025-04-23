@@ -25,56 +25,46 @@ fn main() {
     let output_path = path_to_file.parent().unwrap().join(output_path_suffix);
     fs::create_dir_all(&output_path).unwrap();
 
-    write_states(&wb, &output_path);
-    write_steps(&wb, &output_path);
+    let states = write_states(&wb, &output_path);
+    write_steps(&wb, &output_path, &states);
     write_mappings(&output_path);
 }
 
-fn write_states(workbook: &WorkBook, output_path: &PathBuf) {
+fn write_states(workbook: &WorkBook, output_path: &PathBuf) -> HashSet<String> {
     // shapes found during extracting the states will be saved in this set and returned
-    let mut shape_set: HashSet<String> = HashSet::new();
+    let mut state_set: HashSet<String> = HashSet::new();
 
     // find the states sheet in the workbook
     let states_sheet_index = workbook.sheet_idx("states").expect("A sheet with name 'states' is required.");
     let states_sheet = workbook.sheet(states_sheet_index);
 
     // this is where the states will be written as CSV
-    let states_csv_path = output_path.join("states.csv");
-    let mut states_output = BufWriter::new(File::create(&states_csv_path).expect("Could not create/truncate states file"));
+    let mut states_output = BufWriter::new(File::create(output_path.join("states.csv")).expect("Could not create/truncate states file"));
     states_output.write_all(b"\"name\",\"description\",\"shape\"\n").unwrap();
+    let mut shapes_output = BufWriter::new(File::create(output_path.join("shapes.csv")).expect("Could not create/truncate shapes file"));
+    shapes_output.write_all(b"\"name\"\n").unwrap();
+
 
     // parse the states, duplicate the ones with multiple shapes
-    let row_iter_states = states_sheet.iter_rows((1, 0)..(MAX_ROWS, 3));
-    let mut current_output_line = String::new();
+    let row_iter_states = states_sheet.iter_rows((1, 0)..(MAX_ROWS, 2));
     for ((_row, col), value) in row_iter_states {
-        if col == 2 {   // This is the column with shapes. If multiple shapes are listes, the lines are duplicated with a single shape per line.
-            value.value.as_str_opt().unwrap()
-                .replace(' ', "")
-                .split(',')
-                .for_each(|shape| {
-                    states_output.write_all(current_output_line.as_bytes()).unwrap();
-                    states_output.write_all(b"\"").unwrap();
-                    states_output.write_all(shape.as_bytes()).unwrap();
-                    states_output.write_all(b"\"\n").unwrap();
-                    shape_set.insert(shape.to_string());
-                });
-            current_output_line.clear();
+        if col == 1 {
+            states_output.write_all(b"\"").unwrap();
+            states_output.write_all(value.value.as_str_opt().unwrap().as_bytes()).unwrap();
+            states_output.write_all(b"\"\n").unwrap();
         } else {
-            current_output_line.push_str("\"");
-            current_output_line.push_str(value.value.as_str_opt().unwrap());
-            current_output_line.push_str("\",");
+            let state_name = value.value.as_string_opt().unwrap();
+            states_output.write_all(b"\"").unwrap();
+            states_output.write_all(state_name.as_bytes()).unwrap();
+            states_output.write_all(b"\",").unwrap();
+            shapes_output.write_all(b"\"").unwrap();
+            shapes_output.write_all(state_name.as_bytes()).unwrap();
+            shapes_output.write_all(b"\"\n").unwrap();
+            state_set.insert(state_name);
         }
     }
 
-    // now write the shapes
-    let mut shapes_str = String::from("name\n");
-    shapes_str.push_str(shape_set.iter()
-        .map(|s| s.to_string())
-        .collect::<Vec<String>>().join("\n").as_str());
-    shapes_str.push('\n');
-    let shapes_csv_path = output_path.join("shapes.csv");
-    let mut shapes_output_file = File::create(&shapes_csv_path).expect("Could not create/truncate shapes file");
-    shapes_output_file.write_all(shapes_str.as_bytes()).unwrap();
+    state_set
 }
 
 #[derive(Serialize, Deserialize)]
@@ -86,7 +76,7 @@ struct Step {
     end_states: HashSet<String>,
 }
 
-fn write_steps(workbook: &WorkBook, output_path: &PathBuf) {
+fn write_steps(workbook: &WorkBook, output_path: &PathBuf, states: &HashSet<String>) {
     // find the steps sheet in the workbook
     let steps_sheet_index = workbook.sheet_idx("steps").expect("A sheet with name 'steps' is required.");
     let steps_sheet = workbook.sheet(steps_sheet_index);
@@ -94,7 +84,6 @@ fn write_steps(workbook: &WorkBook, output_path: &PathBuf) {
     // this is where the steps will be written as CSV
     let steps_json_path = output_path.join("steps.json");
     let mut steps_output = BufWriter::new(File::create(&steps_json_path).expect("Could not create/truncate steps file"));
-    //steps_output.write_all(b"\"name\",\"description\",\"level\",\"start_state\",\"end_state\"\n").unwrap();
 
     let row_iter_steps = steps_sheet.iter_rows((1, 0)..(MAX_ROWS, 5));
 
@@ -105,7 +94,7 @@ fn write_steps(workbook: &WorkBook, output_path: &PathBuf) {
     
     let mut json_steps: Vec<Step> = Vec::new();
 
-    for ((_row, col), value) in row_iter_steps {
+    for ((row, col), value) in row_iter_steps {
         match col {
             0 => {
                 let value_opt = value.value.as_string_opt();
@@ -133,6 +122,10 @@ fn write_steps(workbook: &WorkBook, output_path: &PathBuf) {
                     },
                     None => HashSet::new(),
                 };
+                if !start_states.is_subset(states) {
+                    let differences = start_states.difference(states).cloned().collect::<Vec<_>>().join(", ");
+                    panic!("ERROR: Unknown start state(s) used in steps sheet: [{differences}] in cell [{}, {}]", row + 1, col + 1);
+                }
             },
             4 => {
                 let end_states: HashSet<String> = value.value.as_string_opt().unwrap().to_string()
@@ -140,6 +133,10 @@ fn write_steps(workbook: &WorkBook, output_path: &PathBuf) {
                     .split(',')
                     .map(String::from)
                     .collect();
+                if !end_states.is_subset(states) {
+                    let differences = end_states.difference(states).cloned().collect::<Vec<_>>().join(", ");
+                    panic!("ERROR: Unknown end state(s) used in steps sheet: [{differences}] in cell [{}, {}]", row + 1, col + 1);
+                }
                 let step = Step {
                     name: name.clone(), 
                     description: description.clone(), 
