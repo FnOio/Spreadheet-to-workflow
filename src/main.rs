@@ -148,7 +148,7 @@ fn write_steps(workbook: &WorkBook, output_path: &PathBuf, states: &HashSet<Stri
             _ => { /* ignore the rest of the columns */}
         }
     }
-    serde_json::to_writer(&mut steps_output, &json_steps).unwrap();
+    serde_json::to_writer_pretty(&mut steps_output, &json_steps).unwrap();
 }
 
 fn write_mappings(output_path: &PathBuf) {
