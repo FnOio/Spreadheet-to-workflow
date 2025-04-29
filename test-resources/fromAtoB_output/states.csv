@@ -1,0 +1,5 @@
+"name","shape","description"
+"reachedA","reachedA","Got to point A"
+"reachedB","reachedB","Got to point B"
+"hasHikingGear","hasHikingGear","You have hiking gear and are ready to climb a mountain!"
+"hasNoHikingGear","hasNoHikingGear","You have no hiking gear, so you have to take the boring tunnel."

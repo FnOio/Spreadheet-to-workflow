@@ -1,0 +1,66 @@
+[
+  {
+    "name": "goToBviaA",
+    "description": "Start at home, go to point A, then to point B.",
+    "levels": [
+      "Journey"
+    ],
+    "start_states": [],
+    "end_states": [
+      "reachedB"
+    ]
+  },
+  {
+    "name": "goToA",
+    "description": "Go to the starting point, A",
+    "levels": [
+      "Container",
+      "Component"
+    ],
+    "start_states": [],
+    "end_states": [
+      "reachedA"
+    ]
+  },
+  {
+    "name": "fromAtoB",
+    "description": "Go from A to B, but there's a mountain in between...",
+    "levels": [
+      "Container"
+    ],
+    "start_states": [
+      "reachedA"
+    ],
+    "end_states": [
+      "reachedB"
+    ]
+  },
+  {
+    "name": "hike",
+    "description": "Hike over the mountain, only if you have hiking gear",
+    "levels": [
+      "Component"
+    ],
+    "start_states": [
+      "reachedA",
+      "hasHikingGear"
+    ],
+    "end_states": [
+      "reachedB"
+    ]
+  },
+  {
+    "name": "goThroughTunnel",
+    "description": "You don't have hiking gear; go through the tunnel",
+    "levels": [
+      "Component"
+    ],
+    "start_states": [
+      "reachedA",
+      "hasNoHikingGear"
+    ],
+    "end_states": [
+      "reachedB"
+    ]
+  }
+]

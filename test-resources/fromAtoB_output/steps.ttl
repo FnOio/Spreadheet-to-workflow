@@ -1,0 +1,43 @@
+
+<http://localhost:8000/steps#fromAtoB> a <https://fast.ilabt.imec.be/ns/oslo-steps/0.2#ContainerLevelStep>;
+  <https://fast.ilabt.imec.be/ns/oslo-steps/0.2#hasDescription> <http://localhost:8000/steps#fromAtoBDescription>;
+  <https://fast.ilabt.imec.be/ns/oslo-steps/0.2#producesState> <http://localhost:8000/states#reachedB>;
+  <https://fast.ilabt.imec.be/ns/oslo-steps/0.2#requiresState> <http://localhost:8000/states#reachedA> .
+
+<http://localhost:8000/steps#fromAtoBDescription> <http://www.w3.org/2008/05/skos-xl#literalForm>
+    "Go from A to B, but there's a mountain in between..." .
+
+<http://localhost:8000/steps#goThroughTunnel> a <https://fast.ilabt.imec.be/ns/oslo-steps/0.2#ComponentLevelStep>;
+  <https://fast.ilabt.imec.be/ns/oslo-steps/0.2#hasDescription> <http://localhost:8000/steps#goThroughTunnelDescription>;
+  <https://fast.ilabt.imec.be/ns/oslo-steps/0.2#producesState> <http://localhost:8000/states#reachedB>;
+  <https://fast.ilabt.imec.be/ns/oslo-steps/0.2#requiresState> <http://localhost:8000/states#hasNoHikingGear>,
+    <http://localhost:8000/states#reachedA> .
+
+<http://localhost:8000/steps#goThroughTunnelDescription> <http://www.w3.org/2008/05/skos-xl#literalForm>
+    "You don't have hiking gear; go through the tunnel" .
+
+<http://localhost:8000/steps#goToA> a <https://fast.ilabt.imec.be/ns/oslo-steps/0.2#ComponentLevelStep>,
+    <https://fast.ilabt.imec.be/ns/oslo-steps/0.2#ContainerLevelStep>;
+  <https://fast.ilabt.imec.be/ns/oslo-steps/0.2#hasDescription> <http://localhost:8000/steps#goToADescription>;
+  <https://fast.ilabt.imec.be/ns/oslo-steps/0.2#producesState> <http://localhost:8000/states#reachedA>;
+  <https://fast.ilabt.imec.be/ns/oslo-steps/0.2#requiresState> <https://fast.ilabt.imec.be/ns/oslo-steps/0.2#emptyState> .
+
+<http://localhost:8000/steps#goToADescription> <http://www.w3.org/2008/05/skos-xl#literalForm>
+    "Go to the starting point, A" .
+
+<http://localhost:8000/steps#goToBviaA> a <https://fast.ilabt.imec.be/ns/oslo-steps/0.2#JourneyLevelStep>;
+  <https://fast.ilabt.imec.be/ns/oslo-steps/0.2#hasDescription> <http://localhost:8000/steps#goToBviaADescription>;
+  <https://fast.ilabt.imec.be/ns/oslo-steps/0.2#producesState> <http://localhost:8000/states#reachedB>;
+  <https://fast.ilabt.imec.be/ns/oslo-steps/0.2#requiresState> <https://fast.ilabt.imec.be/ns/oslo-steps/0.2#emptyState> .
+
+<http://localhost:8000/steps#goToBviaADescription> <http://www.w3.org/2008/05/skos-xl#literalForm>
+    "Start at home, go to point A, then to point B." .
+
+<http://localhost:8000/steps#hike> a <https://fast.ilabt.imec.be/ns/oslo-steps/0.2#ComponentLevelStep>;
+  <https://fast.ilabt.imec.be/ns/oslo-steps/0.2#hasDescription> <http://localhost:8000/steps#hikeDescription>;
+  <https://fast.ilabt.imec.be/ns/oslo-steps/0.2#producesState> <http://localhost:8000/states#reachedB>;
+  <https://fast.ilabt.imec.be/ns/oslo-steps/0.2#requiresState> <http://localhost:8000/states#hasHikingGear>,
+    <http://localhost:8000/states#reachedA> .
+
+<http://localhost:8000/steps#hikeDescription> <http://www.w3.org/2008/05/skos-xl#literalForm>
+    "Hike over the mountain, only if you have hiking gear" .
