@@ -13,7 +13,7 @@
 
 # !!MAKE THESE VARIABLES POINT TO THE RIGHT PATHS!!
 YARRRMLPARSER=/home/geraldh/projects/yarrrml/yarrrml-parser/bin/parser.js
-RMLMAPPER=/home/geraldh/projects/rml/rmlmapper-java/target/rmlmapper-7.3.3-r0-all.jar
+RMLMAPPER=/home/geraldh/projects/rml/rmlmapper-java/target/rmlmapper-*-all.jar
 STW=/home/geraldh/projects/oslo/prepare-flow-mappings/target/release/spreadsheet-to-flow
 
 if [ $# -eq 0 ]
