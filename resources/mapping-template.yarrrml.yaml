@@ -56,7 +56,7 @@ mappings:
       - [sh:datatype, xsd:boolean~iri]
       - [sh:minCount, '1', xsd:integer]
       - [sh:maxCount, '1', xsd:integer]
-      - [sh:pattern, 'true']
+      - [sh:hasValue, 'true']
 
 
   #####################
