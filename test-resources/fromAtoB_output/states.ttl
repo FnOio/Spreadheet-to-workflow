@@ -1,16 +1,16 @@
 
-<http://localhost:8000/states#hasHikingGear> a <https://fast.ilabt.imec.be/ns/oslo-steps/0.2#State>;
+<http://localhost:8000/states#hasHikingGear> a <https://w3id.org/imec/ns/fno-steps#State>;
   <http://www.w3.org/2000/01/rdf-schema#label> "You have hiking gear and are ready to climb a mountain!";
-  <https://fast.ilabt.imec.be/ns/oslo-steps/0.2#hasStateShape> <http://localhost:8000/shapes#hasHikingGear> .
+  <https://w3id.org/imec/ns/fno-steps#hasStateShape> <http://localhost:8000/shapes#hasHikingGear> .
 
-<http://localhost:8000/states#hasNoHikingGear> a <https://fast.ilabt.imec.be/ns/oslo-steps/0.2#State>;
+<http://localhost:8000/states#hasNoHikingGear> a <https://w3id.org/imec/ns/fno-steps#State>;
   <http://www.w3.org/2000/01/rdf-schema#label> "You have no hiking gear, so you have to take the boring tunnel.";
-  <https://fast.ilabt.imec.be/ns/oslo-steps/0.2#hasStateShape> <http://localhost:8000/shapes#hasNoHikingGear> .
+  <https://w3id.org/imec/ns/fno-steps#hasStateShape> <http://localhost:8000/shapes#hasNoHikingGear> .
 
-<http://localhost:8000/states#reachedA> a <https://fast.ilabt.imec.be/ns/oslo-steps/0.2#State>;
+<http://localhost:8000/states#reachedA> a <https://w3id.org/imec/ns/fno-steps#State>;
   <http://www.w3.org/2000/01/rdf-schema#label> "Got to point A";
-  <https://fast.ilabt.imec.be/ns/oslo-steps/0.2#hasStateShape> <http://localhost:8000/shapes#reachedA> .
+  <https://w3id.org/imec/ns/fno-steps#hasStateShape> <http://localhost:8000/shapes#reachedA> .
 
-<http://localhost:8000/states#reachedB> a <https://fast.ilabt.imec.be/ns/oslo-steps/0.2#State>;
+<http://localhost:8000/states#reachedB> a <https://w3id.org/imec/ns/fno-steps#State>;
   <http://www.w3.org/2000/01/rdf-schema#label> "Got to point B";
-  <https://fast.ilabt.imec.be/ns/oslo-steps/0.2#hasStateShape> <http://localhost:8000/shapes#reachedB> .
+  <https://w3id.org/imec/ns/fno-steps#hasStateShape> <http://localhost:8000/shapes#reachedB> .

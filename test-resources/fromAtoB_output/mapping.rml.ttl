@@ -11,7 +11,7 @@
 @prefix ql: <http://semweb.mmlab.be/ns/ql#> .
 @prefix : <http://mapping.example.com/> .
 @prefix ex: <http://example.com/ns#> .
-@prefix o-steps: <https://fast.ilabt.imec.be/ns/oslo-steps/0.2#> .
+@prefix fno-steps: <https://w3id.org/imec/ns/fno-steps#> .
 @prefix sh: <http://www.w3.org/ns/shacl#> .
 @prefix o-persoon: <https://data.vlaanderen.be/ns/persoon#> .
 @prefix xl: <http://www.w3.org/2008/05/skos-xl#> .
@@ -79,7 +79,7 @@
 	rr:constant rdf:type .
 
 :om_000 rdf:type rr:ObjectMap ;
-	rr:constant o-steps:StateShape ;
+	rr:constant fno-steps:StateShape ;
 	rr:termType rr:IRI .
 
 :pom_001 rdf:type rr:PredicateObjectMap ;
@@ -194,7 +194,7 @@
 	rr:objectMap :om_009 .
 
 :pm_010 rdf:type rr:PredicateMap ;
-	rr:constant sh:pattern .
+	rr:constant sh:hasValue .
 
 :om_009 rdf:type rr:ObjectMap ;
 	rr:constant "true" ;
@@ -218,7 +218,7 @@
 	rr:constant rdf:type .
 
 :om_010 rdf:type rr:ObjectMap ;
-	rr:constant o-steps:State ;
+	rr:constant fno-steps:State ;
 	rr:termType rr:IRI .
 
 :pom_012 rdf:type rr:PredicateObjectMap ;
@@ -237,7 +237,7 @@
 	rr:objectMap :om_023 .
 
 :pm_013 rdf:type rr:PredicateMap ;
-	rr:constant o-steps:hasStateShape .
+	rr:constant fno-steps:hasStateShape .
 
 :map_steps_000 rml:logicalSource :source_002 ;
 	rdf:type rr:TriplesMap ;
@@ -265,14 +265,14 @@
 	rr:objectMap :om_024 .
 
 :pm_015 rdf:type rr:PredicateMap ;
-	rr:constant o-steps:hasDescription .
+	rr:constant fno-steps:hasDescription .
 
 :pom_016 rdf:type rr:PredicateObjectMap ;
 	rr:predicateMap :pm_016 ;
 	rr:objectMap :om_013 .
 
 :pm_016 rdf:type rr:PredicateMap ;
-	rr:constant o-steps:requiresState .
+	rr:constant fno-steps:requiresState .
 
 :om_013 rdf:type rr:ObjectMap ;
 	rr:template "http://localhost:8000/states#{start_states}" ;
@@ -283,7 +283,7 @@
 	rr:objectMap :om_014 .
 
 :pm_017 rdf:type rr:PredicateMap ;
-	rr:constant o-steps:requiresState .
+	rr:constant fno-steps:requiresState .
 
 :om_014 rdf:type fnml:FunctionTermMap ;
 	rr:termType rr:IRI ;
@@ -372,7 +372,7 @@
 	rr:constant idlab-fn:str .
 
 :om_019 rdf:type rr:ObjectMap ;
-	rr:constant "https://fast.ilabt.imec.be/ns/oslo-steps/0.2#emptyState" ;
+	rr:constant "https://w3id.org/imec/ns/fno-steps#emptyState" ;
 	rr:termType rr:IRI .
 
 :pom_023 rdf:type rr:PredicateObjectMap ;
@@ -380,7 +380,7 @@
 	rr:objectMap :om_020 .
 
 :pm_023 rdf:type rr:PredicateMap ;
-	rr:constant o-steps:producesState .
+	rr:constant fno-steps:producesState .
 
 :om_020 rdf:type rr:ObjectMap ;
 	rr:template "http://localhost:8000/states#{end_states}" ;

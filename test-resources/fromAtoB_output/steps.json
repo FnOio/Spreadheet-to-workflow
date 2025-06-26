@@ -14,8 +14,8 @@
     "name": "goToA",
     "description": "Go to the starting point, A",
     "levels": [
-      "Container",
-      "Component"
+      "Component",
+      "Container"
     ],
     "start_states": [],
     "end_states": [
@@ -42,8 +42,8 @@
       "Component"
     ],
     "start_states": [
-      "reachedA",
-      "hasHikingGear"
+      "hasHikingGear",
+      "reachedA"
     ],
     "end_states": [
       "reachedB"
@@ -56,8 +56,8 @@
       "Component"
     ],
     "start_states": [
-      "reachedA",
-      "hasNoHikingGear"
+      "hasNoHikingGear",
+      "reachedA"
     ],
     "end_states": [
       "reachedB"

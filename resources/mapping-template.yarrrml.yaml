@@ -1,7 +1,7 @@
 
 prefixes:
   ex: "http://example.com/ns#"
-  o-steps: "https://fast.ilabt.imec.be/ns/oslo-steps/0.2#"
+  fno-steps: "https://w3id.org/imec/ns/fno-steps#"
   sh: "http://www.w3.org/ns/shacl#"
   o-persoon: "https://data.vlaanderen.be/ns/persoon#"
   rdfs: "http://www.w3.org/2000/01/rdf-schema#"
@@ -35,7 +35,7 @@ mappings:
       - value: http://localhost:8000/shapes#$(name)
         targets: shapes-target
     po:
-      - [a, o-steps:StateShape]
+      - [a, fno-steps:StateShape]
       - [rdfs:label, 'TODO: provide a description']
       - [sh:targetClass, o-persoon:Inwoner~iri]
       - predicate: sh:property
@@ -68,9 +68,9 @@ mappings:
       - value: http://localhost:8000/states#$(name)
         targets: states-target
     po:
-      - [a, o-steps:State ]
+      - [a, fno-steps:State ]
       - [rdfs:label, $(description)]
-      - predicate: o-steps:hasStateShape
+      - predicate: fno-steps:hasStateShape
         object:
           - mapping: shape
             condition:
@@ -89,13 +89,13 @@ mappings:
         targets: steps-target
     po:
       - [a, https://fast.ilabt.imec.be/ns/oslo-steps/0.2#$(levels)LevelStep ]
-      - predicate: o-steps:hasDescription
+      - predicate: fno-steps:hasDescription
         objects:
           - mapping: stepsDescriptions
-      - [o-steps:requiresState, http://localhost:8000/states#$(start_states)~iri]
-      - predicate: o-steps:requiresState
+      - [fno-steps:requiresState, http://localhost:8000/states#$(start_states)~iri]
+      - predicate: fno-steps:requiresState
         objects:
-          - value: o-steps:emptyState
+          - value: fno-steps:emptyState
             type: iri
         condition:
           function: equal
@@ -106,7 +106,7 @@ mappings:
                 function: grel:array_length
                 parameters:
                   - [grel:p_array_a, $(start_states)]
-      - [o-steps:producesState, http://localhost:8000/states#$(end_states)~iri]
+      - [fno-steps:producesState, http://localhost:8000/states#$(end_states)~iri]
 
   stepsDescriptions:
     sources: steps-source
