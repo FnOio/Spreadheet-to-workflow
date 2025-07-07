@@ -9,7 +9,7 @@ These generated shapes need to be customized to reflect the actual conditions.
 
 ```mermaid
 ---
-title: A Pipeline to generate a FnO-Steps skeleton. Spreadsheet-to-flow is marked in yellow.
+title: A Pipeline to generate a FnO-Steps skeleton.
 ---
 flowchart LR
     subgraph Spreadsheet-to-flow
