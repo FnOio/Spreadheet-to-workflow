@@ -45,11 +45,11 @@ mapping file with [YARRRML Parser](https://github.com/rmlio/yarrrml-parser).
 
 An RML mapping engine such as [RMLMapper](https://github.com/RMLio/rmlmapper-java)
 then takes the RML mapping file together with the generated data files as input
-and generated an FnO-Steps flow as output, consisting of
+and generates an FnO-Steps flow as output, consisting of
 `steps.ttl`, `states.ttl` and `shapes.ttl`
 
 ## Running the complete pipeline with Docker / Podman
-A Dockerfile which contains Spreadsheet-to-flow, YARRRML Parser and RMLMapper is provided.
+A container which contains Spreadsheet-to-flow, YARRRML Parser and RMLMapper is provided (with `Dockerfile`).
 It is tested on [Docker](https://www.docker.com/) and [Podman](https://podman.io/).
 
 Build the container (`docker` can be replaced with `podman`):
