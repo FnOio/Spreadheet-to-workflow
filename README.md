@@ -120,7 +120,9 @@ We'll explain how the spreadsheet looks like for the flow in `test-resources/exa
 The situation is: you want to hike to a place called `B`, but before you
 can start hiking, you have to be equiped with a hat and some other gear.
 
-```mermaid
+
+```
+%% This Mermaid diagram doesn't render in this version of GitLab; see picture below
 flowchart LR
         A@{shape: sm-circ}
         A --> B@{shape: fork}
@@ -136,6 +138,8 @@ flowchart LR
         end
         end
 ```
+
+![example flow](test-resources/example_flow.png)
 
 In FnO-Steps terminology, the start state is called **the empty state** (the circle at the left).
 The end state is called a **goal state** has a name, **reachedB** in this case.
