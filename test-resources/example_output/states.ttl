@@ -1,0 +1,12 @@
+
+<http://localhost:8000/states#hasHat> a <https://w3id.org/imec/ns/fno-steps#State>;
+  <http://www.w3.org/2000/01/rdf-schema#label> "You have a hat, because the sun shines";
+  <https://w3id.org/imec/ns/fno-steps#hasStateShape> <http://localhost:8000/shapes#hasHat> .
+
+<http://localhost:8000/states#hasHikingGear> a <https://w3id.org/imec/ns/fno-steps#State>;
+  <http://www.w3.org/2000/01/rdf-schema#label> "You have hiking gear and are ready to climb a mountain!";
+  <https://w3id.org/imec/ns/fno-steps#hasStateShape> <http://localhost:8000/shapes#hasHikingGear> .
+
+<http://localhost:8000/states#reachedB> a <https://w3id.org/imec/ns/fno-steps#State>;
+  <http://www.w3.org/2000/01/rdf-schema#label> "Got to point B";
+  <https://w3id.org/imec/ns/fno-steps#hasStateShape> <http://localhost:8000/shapes#reachedB> .

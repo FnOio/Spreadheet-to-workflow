@@ -1,0 +1,48 @@
+
+<http://localhost:8000/shapes#hasHat> a <https://w3id.org/imec/ns/fno-steps#StateShape>;
+  <http://www.w3.org/2000/01/rdf-schema#label> "TODO: provide a description";
+  <http://www.w3.org/ns/shacl#property> <http://localhost:8000/shapes#hasHatPropertyShape>;
+  <http://www.w3.org/ns/shacl#targetClass> <https://data.vlaanderen.be/ns/persoon#Inwoner> .
+
+<http://localhost:8000/shapes#hasHatPropertyShape> a <http://www.w3.org/ns/shacl#PropertyShape>;
+  <http://www.w3.org/2000/01/rdf-schema#label> "TODO: provide a description";
+  <http://www.w3.org/ns/shacl#datatype> <http://www.w3.org/2001/XMLSchema#boolean>;
+  <http://www.w3.org/ns/shacl#hasValue> "true";
+  <http://www.w3.org/ns/shacl#maxCount> 1;
+  <http://www.w3.org/ns/shacl#minCount> 1;
+  <http://www.w3.org/ns/shacl#path> <http://example.com/ns#hashasHat> .
+
+<http://localhost:8000/shapes#hasHikingGear> a <https://w3id.org/imec/ns/fno-steps#StateShape>;
+  <http://www.w3.org/2000/01/rdf-schema#label> "TODO: provide a description";
+  <http://www.w3.org/ns/shacl#property> <http://localhost:8000/shapes#hasHikingGearPropertyShape>;
+  <http://www.w3.org/ns/shacl#targetClass> <https://data.vlaanderen.be/ns/persoon#Inwoner> .
+
+<http://localhost:8000/shapes#hasHikingGearPropertyShape> a <http://www.w3.org/ns/shacl#PropertyShape>;
+  <http://www.w3.org/2000/01/rdf-schema#label> "TODO: provide a description";
+  <http://www.w3.org/ns/shacl#datatype> <http://www.w3.org/2001/XMLSchema#boolean>;
+  <http://www.w3.org/ns/shacl#hasValue> "true";
+  <http://www.w3.org/ns/shacl#maxCount> 1;
+  <http://www.w3.org/ns/shacl#minCount> 1;
+  <http://www.w3.org/ns/shacl#path> <http://example.com/ns#hashasHikingGear> .
+
+<http://localhost:8000/shapes#reachedB> a <https://w3id.org/imec/ns/fno-steps#StateShape>;
+  <http://www.w3.org/2000/01/rdf-schema#label> "TODO: provide a description";
+  <http://www.w3.org/ns/shacl#property> <http://localhost:8000/shapes#reachedBPropertyShape>;
+  <http://www.w3.org/ns/shacl#targetClass> <https://data.vlaanderen.be/ns/persoon#Inwoner> .
+
+<http://localhost:8000/shapes#reachedBPropertyShape> a <http://www.w3.org/ns/shacl#PropertyShape>;
+  <http://www.w3.org/2000/01/rdf-schema#label> "TODO: provide a description";
+  <http://www.w3.org/ns/shacl#datatype> <http://www.w3.org/2001/XMLSchema#boolean>;
+  <http://www.w3.org/ns/shacl#hasValue> "true";
+  <http://www.w3.org/ns/shacl#maxCount> 1;
+  <http://www.w3.org/ns/shacl#minCount> 1;
+  <http://www.w3.org/ns/shacl#path> <http://example.com/ns#hasreachedB> .
+
+<http://localhost:8000/states#hasHat> <https://w3id.org/imec/ns/fno-steps#hasStateShape>
+    <http://localhost:8000/shapes#hasHat> .
+
+<http://localhost:8000/states#hasHikingGear> <https://w3id.org/imec/ns/fno-steps#hasStateShape>
+    <http://localhost:8000/shapes#hasHikingGear> .
+
+<http://localhost:8000/states#reachedB> <https://w3id.org/imec/ns/fno-steps#hasStateShape>
+    <http://localhost:8000/shapes#reachedB> .

@@ -1,0 +1,60 @@
+[
+  {
+    "name": "fromAtoB",
+    "description": "Go from A to B, but there's a mountain in between...",
+    "levels": [
+      "Journey"
+    ],
+    "start_states": [],
+    "end_states": [
+      "reachedB"
+    ]
+  },
+  {
+    "name": "hikeToB",
+    "description": "Hike over the mountain, only if you have hiking gear",
+    "levels": [
+      "Container"
+    ],
+    "start_states": [],
+    "end_states": [
+      "reachedB"
+    ]
+  },
+  {
+    "name": "getHat",
+    "description": "You get a hat because the sun shines",
+    "levels": [
+      "Component"
+    ],
+    "start_states": [],
+    "end_states": [
+      "hasHat"
+    ]
+  },
+  {
+    "name": "getHikingGear",
+    "description": "You grab your hiking gear",
+    "levels": [
+      "Component"
+    ],
+    "start_states": [],
+    "end_states": [
+      "hasHikingGear"
+    ]
+  },
+  {
+    "name": "hike",
+    "description": "You're reaching B",
+    "levels": [
+      "Component"
+    ],
+    "start_states": [
+      "hasHat",
+      "hasHikingGear"
+    ],
+    "end_states": [
+      "reachedB"
+    ]
+  }
+]

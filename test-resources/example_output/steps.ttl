@@ -1,0 +1,41 @@
+
+<http://localhost:8000/steps#fromAtoB> a <https://fast.ilabt.imec.be/ns/oslo-steps/0.2#JourneyLevelStep>;
+  <https://w3id.org/imec/ns/fno-steps#hasDescription> <http://localhost:8000/steps#fromAtoBDescription>;
+  <https://w3id.org/imec/ns/fno-steps#producesState> <http://localhost:8000/states#reachedB>;
+  <https://w3id.org/imec/ns/fno-steps#requiresState> <https://w3id.org/imec/ns/fno-steps#emptyState> .
+
+<http://localhost:8000/steps#fromAtoBDescription> <http://www.w3.org/2008/05/skos-xl#literalForm>
+    "Go from A to B, but there's a mountain in between..." .
+
+<http://localhost:8000/steps#getHat> a <https://fast.ilabt.imec.be/ns/oslo-steps/0.2#ComponentLevelStep>;
+  <https://w3id.org/imec/ns/fno-steps#hasDescription> <http://localhost:8000/steps#getHatDescription>;
+  <https://w3id.org/imec/ns/fno-steps#producesState> <http://localhost:8000/states#hasHat>;
+  <https://w3id.org/imec/ns/fno-steps#requiresState> <https://w3id.org/imec/ns/fno-steps#emptyState> .
+
+<http://localhost:8000/steps#getHatDescription> <http://www.w3.org/2008/05/skos-xl#literalForm>
+    "You get a hat because the sun shines" .
+
+<http://localhost:8000/steps#getHikingGear> a <https://fast.ilabt.imec.be/ns/oslo-steps/0.2#ComponentLevelStep>;
+  <https://w3id.org/imec/ns/fno-steps#hasDescription> <http://localhost:8000/steps#getHikingGearDescription>;
+  <https://w3id.org/imec/ns/fno-steps#producesState> <http://localhost:8000/states#hasHikingGear>;
+  <https://w3id.org/imec/ns/fno-steps#requiresState> <https://w3id.org/imec/ns/fno-steps#emptyState> .
+
+<http://localhost:8000/steps#getHikingGearDescription> <http://www.w3.org/2008/05/skos-xl#literalForm>
+    "You grab your hiking gear" .
+
+<http://localhost:8000/steps#hike> a <https://fast.ilabt.imec.be/ns/oslo-steps/0.2#ComponentLevelStep>;
+  <https://w3id.org/imec/ns/fno-steps#hasDescription> <http://localhost:8000/steps#hikeDescription>;
+  <https://w3id.org/imec/ns/fno-steps#producesState> <http://localhost:8000/states#reachedB>;
+  <https://w3id.org/imec/ns/fno-steps#requiresState> <http://localhost:8000/states#hasHat>,
+    <http://localhost:8000/states#hasHikingGear> .
+
+<http://localhost:8000/steps#hikeDescription> <http://www.w3.org/2008/05/skos-xl#literalForm>
+    "You're reaching B" .
+
+<http://localhost:8000/steps#hikeToB> a <https://fast.ilabt.imec.be/ns/oslo-steps/0.2#ContainerLevelStep>;
+  <https://w3id.org/imec/ns/fno-steps#hasDescription> <http://localhost:8000/steps#hikeToBDescription>;
+  <https://w3id.org/imec/ns/fno-steps#producesState> <http://localhost:8000/states#reachedB>;
+  <https://w3id.org/imec/ns/fno-steps#requiresState> <https://w3id.org/imec/ns/fno-steps#emptyState> .
+
+<http://localhost:8000/steps#hikeToBDescription> <http://www.w3.org/2008/05/skos-xl#literalForm>
+    "Hike over the mountain, only if you have hiking gear" .
