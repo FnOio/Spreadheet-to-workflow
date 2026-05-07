@@ -1,5 +1,7 @@
 # Spreadsheet-to-(Work)flow
 
+**!!Deprecated!!** Use [to-steps](https://github.com/FnOio/to-steps) instead.
+
 Spreadsheet-to-flow is a CLI tool as part of a pipeline to generate a 
 [FnO-Steps](https://spec.knows.idlab.ugent.be/fno-steps/latest/) workflow
 skeleton from a description of *steps* and *states* in a spreadsheet.
